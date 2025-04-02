@@ -1,6 +1,8 @@
 from fastapi import APIRouter, File, UploadFile
+from fastapi.responses import StreamingResponse
 from utils.ResultGenerator import ResultGenerator
 from PIL import Image
+import io
 
 demo = APIRouter()
 
@@ -22,4 +24,4 @@ async def handle_image(file: UploadFile = File(...)):
     img_io.seek(0)
 
     # 返回灰度图作为响应
-    return ResultGenerator.gen_success_result(message=img_io)
+    return StreamingResponse(img_io, media_type="image/png")
