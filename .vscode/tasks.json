@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run FastAPI Server",
+            "type": "shell",
+            "command": "uvicorn app.main:app --reload",
+            "options": {
+                "cwd": "${workspaceFolder}/app"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Run the FastAPI development server"
+        },
+        {
+            "label": "Install Dependencies",
+            "type": "shell",
+            "command": "pip install -e .",
+            "problemMatcher": [],
+            "group": "build"
+        }
+    ]
+}
