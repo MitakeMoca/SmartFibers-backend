@@ -4,6 +4,7 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 from io import BytesIO
+from app.utils.ResultGenerator import ResultGenerator
 
 router = APIRouter()
 
@@ -33,7 +34,10 @@ async def handle_image(file: UploadFile = File(...)):
     """Handle image upload and return detection results"""
 
     if not file.content_type or not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="File must be an image")
+        raise HTTPException(
+            status_code=400, 
+            detail=ResultGenerator.gen_error_result(400, "File must be an image")
+        )
 
     try:
         # Read image file
@@ -46,4 +50,7 @@ async def handle_image(file: UploadFile = File(...)):
         return StreamingResponse(processed_image, media_type="image/jpeg")
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=500,
+            detail=ResultGenerator.gen_error_result(500, str(e))
+        )
