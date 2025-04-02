@@ -4,7 +4,7 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 from io import BytesIO
-from app.utils.ResultGenerator import ResultGenerator
+from ..utils.ResultGenerator import ResultGenerator
 
 router = APIRouter()
 
