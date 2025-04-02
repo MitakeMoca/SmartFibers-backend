@@ -9,7 +9,7 @@ from app.utils.ResultGenerator import ResultGenerator
 router = APIRouter()
 
 # Load YOLOv8 model (you can change 'yolov8n.pt' to other model sizes)
-model = YOLO("yolov8n.pt")
+model = YOLO("yolov11n.pt")
 
 
 async def process_image(image_bytes: bytes):
@@ -34,10 +34,7 @@ async def handle_image(file: UploadFile = File(...)):
     """Handle image upload and return detection results"""
 
     if not file.content_type or not file.content_type.startswith("image/"):
-        raise HTTPException(
-            status_code=400, 
-            detail=ResultGenerator.gen_error_result(400, "File must be an image")
-        )
+        raise HTTPException(status_code=400, detail=ResultGenerator.gen_error_result(400, "File must be an image"))
 
     try:
         # Read image file
@@ -50,7 +47,4 @@ async def handle_image(file: UploadFile = File(...)):
         return StreamingResponse(processed_image, media_type="image/jpeg")
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=ResultGenerator.gen_error_result(500, str(e))
-        )
+        raise HTTPException(status_code=500, detail=ResultGenerator.gen_error_result(500, str(e)))
