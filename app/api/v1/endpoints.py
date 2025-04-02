@@ -10,6 +10,7 @@ router = APIRouter()
 # Load YOLOv8 model (you can change 'yolov8n.pt' to other model sizes)
 model = YOLO("yolov8n.pt")
 
+
 async def process_image(image_bytes: bytes):
     """Process image with YOLOv8 and return annotated image"""
     # Convert bytes to numpy array
@@ -26,10 +27,12 @@ async def process_image(image_bytes: bytes):
     _, encoded_image = cv2.imencode(".jpg", annotated_image)
     return BytesIO(encoded_image.tobytes())
 
+
 @router.post("/detect/")
 async def handle_image(file: UploadFile = File(...)):
     """Handle image upload and return detection results"""
-    if not file.content_type.startswith("image/"):
+
+    if not file.content_type or not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
 
     try:
