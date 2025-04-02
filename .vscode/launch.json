@@ -3,20 +3,30 @@
     "configurations": [
         {
             "name": "Run FastAPI Dev",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "uv",
-            "args": ["run", "fastapi", "dev", "app/main.py"],
+            "args": [
+                "run",
+                "fastapi",
+                "dev",
+                "app/main.py"
+            ],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "justMyCode": true
         },
         {
             "name": "Debug FastAPI",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "uvicorn",
-            "args": ["app.main:app", "--reload", "--port", "8084"],
+            "args": [
+                "app.main:app",
+                "--reload",
+                "--port",
+                "8084"
+            ],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "justMyCode": true

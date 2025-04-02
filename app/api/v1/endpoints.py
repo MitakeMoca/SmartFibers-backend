@@ -4,12 +4,13 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 from io import BytesIO
-from ..utils.ResultGenerator import ResultGenerator
+from utils.ResultGenerator import ResultGenerator
 
 router = APIRouter()
 
 # Load YOLOv8 model (you can change 'yolov8n.pt' to other model sizes)
-model = YOLO("yolov11n.pt")
+#! MUST BE ABSOLUTE PATH! I dont know why
+model = YOLO("/Users/liuyucheng/Projects/SmartFibers-backend/app/yolo11n.pt")
 
 
 async def process_image(image_bytes: bytes):
