@@ -1,27 +1,42 @@
 from fastapi import APIRouter, File, UploadFile
 from fastapi.responses import StreamingResponse
-from utils.ResultGenerator import ResultGenerator
 from PIL import Image
+from ultralytics import YOLO
 import io
+import asyncio
+from pathlib import Path
 
 demo = APIRouter()
 
+BASE_DIR = Path(__file__).parent.parent
+model_path = BASE_DIR / "train-YOLO8m_300_1280_flipud_1" / "weights" / "best.pt"
+print(model_path)
 
-@demo.post("/handle")
+# 加载模型
+model = YOLO(str(model_path))
+
+
+@demo.post("/predict")
 async def handle_image(file: UploadFile = File(...)):
-    # 读取上传的图片文件
     img_bytes = await file.read()
+    image = Image.open(io.BytesIO(img_bytes)).convert("RGB")
 
-    # 使用 Pillow 打开图片
-    image = Image.open(io.BytesIO(img_bytes))
+    loop = asyncio.get_event_loop()
+    results = await loop.run_in_executor(
+        None,  # 使用默认线程池
+        lambda: model(image)  # 直接调用模型进行预测
+    )
 
-    # 转换图片为灰度图
-    grayscale_image = image.convert("L")
+    # 提取结果并绘制检测框
+    result = results[0]
+    plotted_img_array = result.plot()  # 获取带标注的numpy数组（BGR格式）
 
-    # 保存灰度图到内存
+    # 将BGR转换为RGB并生成Pillow图像
+    plotted_img = Image.fromarray(plotted_img_array[..., ::-1])  # BGR转RGB
+
+    # 将图像保存到内存字节流
     img_io = io.BytesIO()
-    grayscale_image.save(img_io, format="PNG")
+    plotted_img.save(img_io, format="PNG")
     img_io.seek(0)
 
-    # 返回灰度图作为响应
     return StreamingResponse(img_io, media_type="image/png")
